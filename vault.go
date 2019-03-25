@@ -401,6 +401,8 @@ func (r VaultService) get(rn *watchedResource) error {
 		fallthrough
 	case "postgres":
 		fallthrough
+	case "database":
+		fallthrough
 	case "secret":
 		secret, err = r.client.Logical().Read(rn.resource.path)
 		// We must generate the secret if we have the create flag
@@ -415,8 +417,10 @@ func (r VaultService) get(rn *watchedResource) error {
 			}
 		}
 		// if there is a top-level metadata key this is from a v2 kv store
-		if _, ok := secret.Data["metadata"]; ok {
-			secret.Data = secret.Data["data"].(map[string]interface{})
+		if err == nil {
+			if _, ok := secret.Data["metadata"]; ok {
+				secret.Data = secret.Data["data"].(map[string]interface{})
+			}
 		}
 	case "ssh":
 		publicKeyData, err := ioutil.ReadFile(params["public_key_path"].(string))

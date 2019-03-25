@@ -134,7 +134,11 @@ func readYAMLFile(filename string) (*vaultAuthOptions, error) {
 //	min			: the smallest number we can accept
 //	max			: the largest number we can accept
 func getDurationWithin(min, max int) time.Duration {
-	duration := rand.Intn(max-min) + min
+	jitter := max - min
+	if jitter <= 0 {
+		jitter = 1
+	}
+	duration := rand.Intn(jitter) + min
 	return time.Duration(duration) * time.Second
 }
 
@@ -195,6 +199,8 @@ func processResource(rn *VaultResource, data map[string]interface{}) (err error)
 		err = writeCredentialFile(filename, data, rn.fileMode)
 	case "template":
 		err = writeTemplateFile(filename, data, rn.fileMode, rn.templateFile)
+	case "aws":
+		err = writeAwsCredentialFile(filename, data, rn.fileMode)
 	default:
 		return fmt.Errorf("unknown output format: %s", rn.format)
 	}

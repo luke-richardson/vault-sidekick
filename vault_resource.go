@@ -57,7 +57,7 @@ const (
 )
 
 var (
-	resourceFormatRegex = regexp.MustCompile("^(yaml|yml|json|env|ini|txt|cert|bundle|csv|template|credential)$")
+	resourceFormatRegex = regexp.MustCompile("^(yaml|yml|json|env|ini|txt|cert|bundle|csv|template|credential|aws)$")
 
 	// a map of valid resource to retrieve from vault
 	validResources = map[string]bool{
@@ -73,6 +73,7 @@ var (
 		"cubbyhole": true,
 		"cassandra": true,
 		"ssh":       true,
+		"database":  true,
 	}
 )
 
