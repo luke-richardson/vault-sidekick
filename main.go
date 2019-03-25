@@ -62,7 +62,7 @@ func main() {
 		}
 
 		fmt.Printf("\n[warn] attempt " + strconv.Itoa(try+1) + ": unable to create the vault client:" + err.Error())
-		time.Sleep(1)
+		time.Sleep(1 * time.Second)
 	}
 
 	if err != nil {
