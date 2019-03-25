@@ -20,8 +20,10 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/golang/glog"
 )
@@ -49,7 +51,20 @@ func main() {
 	}
 
 	// step: create a client to vault
-	vault, err := NewVaultService(options.vaultURL)
+	var vault *VaultService = nil
+	var err error = nil
+
+	// step: create a client to vault
+	for try := 0; try < 10; try++ {
+		vault, err = NewVaultService(options.vaultURL)
+		if err == nil {
+			break
+		}
+
+		fmt.Printf("\n[warn] attempt " + strconv.Itoa(try+1) + ": unable to create the vault client:" + err.Error())
+		time.Sleep(1)
+	}
+
 	if err != nil {
 		showUsage("unable to create the vault client: %s", err)
 	}
